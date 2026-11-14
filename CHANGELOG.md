@@ -17,3 +17,6 @@ Catatan riwayat perubahan versi pada proyek **Sistem Manajemen Game Roblox**.
 ## [1.0.0] - `bug.html`
 ### Added
 - Rilis awal aplikasi Manajemen Game Roblox (mengandung 5 bug fungsional dan logika untuk bahan evaluasi maintenance).
+
+### Changed (Adaptive Maintenance)
+- Mengoptimalkan tata letak (*responsive layout*) untuk perangkat seluler (HP) menggunakan `<meta name="viewport">`, pembungkus `table-responsive`, serta penyesuaian grid tombol dan form agar tidak melebar di layar kecil.
