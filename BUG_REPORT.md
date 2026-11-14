@@ -34,3 +34,9 @@
 - **Steps to Reproduce:** Klik tombol **Hapus** pada baris ke-3 (*Adopt Me!*).
 - **Expected Result:** Muncul dialog konfirmasi dan menghapus *Adopt Me!*.
 - **Actual Result:** Langsung menghapus baris ke-1 (*Brookhaven RP*) tanpa konfirmasi karena parameter `hapusGame(0)` di-*hardcode*.
+
+## ISSUE #006 — Tampilan Halaman Melebar & Terpotong Saat Dibuka di Layar HP (Mobile)
+- **Kategori:** Adaptive Maintenance | **Severity:** Medium | **Priority:** Medium | **Status:** Closed
+- **Steps to Reproduce:** Buka file `bug.html` menggunakan browser HP atau mode tampilan seluler (`Ctrl + Shift + M` di Chrome).
+- **Expected Result:** Elemen form, kartu statistik, dan tabel menyesuaikan lebar layar HP secara otomatis tanpa melebar ke samping.
+- **Actual Result:** Halaman tidak memiliki `<meta name="viewport">` dan pembungkus tabel responsif, sehingga tampilan mengecil/terpotong dan harus digeser secara horizontal.
