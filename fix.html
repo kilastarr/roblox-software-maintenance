@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Manajemen Game Roblox (v1.1.0 - Fixed)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <div>
+                <h4 class="text-white fw-bold mb-0">🎮 SISTEM MANAJEMEN GAME ROBLOX</h4>
+                <small class="text-white-50">Katalog & Statistik Game Populer Roblox (v1.1.0 - Fixed)</small>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h5 class="fw-bold mb-3">Dashboard</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm p-3 text-center">
+                    <h2 class="text-primary fw-bold mb-0" id="statTotalGame">0</h2>
+                    <small class="text-muted">Total Game Terdaftar</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm p-3 text-center">
+                    <h2 class="text-primary fw-bold mb-0" id="statTotalPemain">0</h2>
+                    <small class="text-muted">Total Pemain Aktif</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white fw-bold">Tambah Game Roblox Baru</div>
+            <div class="card-body">
+                <div id="alertBox"></div>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <input type="text" id="inputNama" class="form-control" placeholder="Nama Game (wajib diawali huruf)">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" id="inputGenre" class="form-control" placeholder="Genre (hanya huruf)">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" id="inputDev" class="form-control" placeholder="Developer (wajib diawali huruf)">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" id="inputPemain" class="form-control" placeholder="Pemain Aktif (>= 0)">
+                    </div>
+                </div>
+                <button onclick="tambahGame()" class="btn btn-primary mt-3">+ Simpan Game</button>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Daftar Game Roblox</span>
+                <input type="text" id="cariKeyword" onkeyup="renderTabel()" class="form-control form-control-sm w-25" placeholder="Cari game / genre / dev...">
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Game</th>
+                            <th>Genre</th>
+                            <th>Developer</th>
+                            <th>Pemain Aktif</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelGame"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dataGame = [
+            { nama: "Brookhaven RP", genre: "Roleplay", dev: "Wolfpaq", pemain: 450000 },
+            { nama: "Blox Fruits", genre: "Adventure", dev: "Gamer Robot", pemain: 150000 },
+            { nama: "Adopt Me!", genre: "Simulation", dev: "Uplift Games", pemain: 35000 }
+        ];
+
+        function tampilkanPesan(pesan, tipe) {
+            document.getElementById('alertBox').innerHTML = `
+                <div class="alert alert-${tipe} alert-dismissible fade show py-2" role="alert">
+                    ${pesan}
+                    <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        }
+
+        function renderTabel() {
+            const keyword = document.getElementById('cariKeyword').value.toLowerCase();
+            const tbody = document.getElementById('tabelGame');
+            tbody.innerHTML = '';
+            
+            // FIX #003: Inisialisasi sebagai angka 0 dan konversi Number() agar penjumlahan akurat
+            let totalPemain = 0;
+            dataGame.forEach(g => totalPemain += Number(g.pemain));
+
+            const hasilFilter = dataGame.filter(g => 
+                g.nama.toLowerCase().includes(keyword) || 
+                g.genre.toLowerCase().includes(keyword) ||
+                g.dev.toLowerCase().includes(keyword)
+            );
+
+            hasilFilter.forEach((g, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${g.nama}</strong></td>
+                        <td><span class="badge bg-secondary">${g.genre}</span></td>
+                        <td>${g.dev}</td>
+                        <td>${Number(g.pemain).toLocaleString()} Players</td>
+                        <!-- FIX #005: Menghapus berdasarkan nama game yang tepat disertai dialog konfirmasi -->
+                        <td><button onclick="hapusGame('${g.nama}')" class="btn btn-danger btn-sm">Hapus</button></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('statTotalGame').innerText = dataGame.length;
+            document.getElementById('statTotalPemain').innerText = totalPemain.toLocaleString();
+        }
+
+        function tambahGame() {
+            // FIX #001: Sanitasi spasi dengan .trim()
+            const nama = document.getElementById('inputNama').value.trim();
+            const genre = document.getElementById('inputGenre').value.trim();
+            const dev = document.getElementById('inputDev').value.trim();
+            const rawPemain = document.getElementById('inputPemain').value;
+            const pemain = Number(rawPemain);
+
+            if (!nama || !/^[a-zA-Z]/.test(nama)) {
+                tampilkanPesan("Nama game wajib diisi, tidak boleh hanya spasi, dan harus diawali huruf!", "danger");
+                return;
+            }
+            // FIX #004: Cegah duplikasi nama game
+            if (dataGame.some(g => g.nama.toLowerCase() === nama.toLowerCase())) {
+                tampilkanPesan(`Nama game '${nama}' sudah terdaftar di sistem!`, "danger");
+                return;
+            }
+            if (!genre || !/^[a-zA-Z\s]+$/.test(genre)) {
+                tampilkanPesan("Genre wajib diisi dan hanya boleh berisi huruf!", "danger");
+                return;
+            }
+            if (!dev || !/^[a-zA-Z]/.test(dev)) {
+                tampilkanPesan("Nama developer wajib diisi dan harus diawali huruf!", "danger");
+                return;
+            }
+            // FIX #002: Tolak jumlah pemain aktif kosong atau bernilai negatif
+            if (rawPemain === '' || pemain < 0) {
+                tampilkanPesan("Jumlah pemain aktif wajib diisi dan tidak boleh bernilai negatif!", "danger");
+                return;
+            }
+
+            dataGame.push({ nama: nama, genre: genre, dev: dev, pemain: pemain });
+            renderTabel();
+            tampilkanPesan(`Sukses: Game '${nama}' berhasil ditambahkan!`, "success");
+
+            document.getElementById('inputNama').value = '';
+            document.getElementById('inputGenre').value = '';
+            document.getElementById('inputDev').value = '';
+            document.getElementById('inputPemain').value = '';
+        }
+
+        function hapusGame(namaGame) {
+            if (confirm(`Apakah Anda yakin ingin menghapus game "${namaGame}"?`)) {
+                dataGame = dataGame.filter(g => g.nama !== namaGame);
+                renderTabel();
+                tampilkanPesan(`Game '${namaGame}' telah dihapus.`, "warning");
+            }
+        }
+
+        renderTabel();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
