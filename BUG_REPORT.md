@@ -1,3 +1,4 @@
+**Penyusun:** Kelompok 2
 # Bug Report — Sistem Manajemen Game Roblox
 
 ## BUG-001 — Formulir menerima input kosong dan spasi
