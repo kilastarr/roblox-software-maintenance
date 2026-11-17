@@ -1,22 +1,15 @@
 # Changelog
 
-Catatan riwayat perubahan versi pada proyek **Sistem Manajemen Game Roblox**.
-
-## [1.1.0] - `fix.html`
+## [1.1.0] — FIX Version
 ### Fixed (Corrective Maintenance)
-- **Issue #001:** Menambahkan `.trim()` untuk menolak input kosong atau berisi spasi saja.
-- **Issue #002:** Menambahkan validasi `pemain < 0` untuk menolak input pemain aktif negatif.
-- **Issue #003:** Memperbaiki bug perhitungan statistik dashboard dengan mengubah inisialisasi `totalPemain = 0` dan konversi `Number()`.
-- **Issue #005:** Memperbaiki fungsi hapus agar menghapus item sesuai nama game yang dipilih serta menambahkan dialog konfirmasi `confirm()`.
+- Validasi kolom wajib menggunakan `.trim()` dan penandaan merah pada kolom yang kosong (BUG-001).
+- Validasi jumlah pemain aktif agar tidak bernilai negatif `< 0` (BUG-002).
+- Perbaikan label status publikasi menjadi "Terverifikasi & Aktif" (BUG-003).
 
-### Added (Perfective & Preventive Maintenance)
-- **Issue #004:** Menambahkan pengecekan anti-duplikasi nama game (`dataGame.some(...)`).
-- Menambahkan validasi format huruf awal pada nama game dan developer, serta khusus huruf pada genre.
-- Menambahkan fitur pencarian langsung (*live search*) berdasarkan nama, genre, maupun developer.
+### Added (Preventive & Adaptive Maintenance)
+- Pencegahan duplikasi nama game terhadap katalog referensi dan data tersimpan.
+- Tata letak responsif mobile (`@media (max-width: 700px)` dan `tabel-scroll`) agar nyaman digunakan di layar HP tanpa melebar.
 
-## [1.0.0] - `bug.html`
+## [1.0.0] — BUG Version
 ### Added
-- Rilis awal aplikasi Manajemen Game Roblox (mengandung 5 bug fungsional dan logika untuk bahan evaluasi maintenance).
-
-### Changed (Adaptive Maintenance)
-- Mengoptimalkan tata letak (*responsive layout*) untuk perangkat seluler (HP) menggunakan `<meta name="viewport">`, pembungkus `table-responsive`, serta penyesuaian grid tombol dan form agar tidak melebar di layar kecil.
+- Dashboard statistik, katalog game Roblox, formulir input, simulasi perbandingan kode, dan penyimpanan riwayat di `localStorage`.

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Game Roblox - Simulasi BUG & FIX (Kelompok 2)</title>
+
+    <style>
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f3ff;
+            color: #1e1b4b;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #311068, #5b21b6);
+            color: white;
+            padding: 30px 8%;
+        }
+        header h1 { margin: 0; font-size: 28px; }
+        header p { margin-bottom: 0; color: #ede9fe; }
+
+        /* NAVIGASI KOTAK MENU */
+        nav {
+            background: #ffffff;
+            padding: 14px 8%;
+            box-shadow: 0 3px 10px rgba(91, 33, 182, 0.12);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        nav a {
+            display: inline-block;
+            background: #f3e8ff;
+            color: #4c1d95;
+            border: 1px solid #d8b4fe;
+            padding: 9px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13.5px;
+            transition: all 0.2s ease;
+        }
+        nav a:hover {
+            background: #6d28d9;
+            color: #ffffff;
+            border-color: #6d28d9;
+            transform: translateY(-1px);
+        }
+        nav a.aktif {
+            background: #4c1d95;
+            color: #ffffff;
+            border-color: #4c1d95;
+            box-shadow: 0 2px 6px rgba(76, 29, 149, 0.3);
+        }
+
+        /* KONTEN */
+        main { width: 85%; max-width: 1100px; margin: 30px auto; }
+        section[id] { scroll-margin-top: 85px; }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(76, 29, 149, 0.08);
+            border: 1px solid #ede9fe;
+        }
+        h2 { color: #4c1d95; margin-top: 0; }
+        h3 { color: #5b21b6; }
+
+        /* DASHBOARD */
+        .dash-banner {
+            background: linear-gradient(135deg, #f3e8ff, #ede9fe);
+            border: 1px solid #d8b4fe;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .dash-banner p { margin: 0; color: #3b0764; font-size: 14px; }
+        .dash-pill {
+            background: #5b21b6;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: bold;
+        }
+        .info-container {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .info {
+            background: #ffffff;
+            border: 1px solid #e9d5ff;
+            border-top: 4px solid #6d28d9;
+            padding: 18px 14px;
+            border-radius: 10px;
+            text-align: left;
+            box-shadow: 0 2px 6px rgba(91, 33, 182, 0.06);
+        }
+        .info.bug-stat { border-top-color: #c93636; }
+        .info.fix-stat { border-top-color: #16834a; }
+        .info .label-stat { font-size: 12px; font-weight: bold; color: #6b7280; text-transform: uppercase; letter-spacing: 0.4px; }
+        .info h3 { font-size: 24px; margin: 6px 0 4px; color: #3b0764; }
+        .info.bug-stat h3 { color: #c93636; }
+        .info.fix-stat h3 { color: #16834a; }
+        .info small { font-size: 12px; color: #64748b; }
+
+        /* TAB PILIHAN FITUR UJI */
+        .tab-bar {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .tab-btn {
+            padding: 11px 8px;
+            background: #f3e8ff;
+            color: #4c1d95;
+            border: 1px solid #d8b4fe;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover {
+            background: #e9d5ff;
+        }
+        .tab-btn.active {
+            background: #5b21b6;
+            color: #ffffff;
+            border-color: #5b21b6;
+            box-shadow: 0 2px 6px rgba(91, 33, 182, 0.25);
+        }
+
+        /* TABEL */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: #5b21b6; color: white; }
+        th, td { padding: 13px; border: 1px solid #ddd6fe; text-align: left; vertical-align: top; }
+        tr:nth-child(even) { background: #faf5ff; }
+
+        /* FORM */
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #3b0764; }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #c4b5fd;
+            border-radius: 7px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            font-family: Consolas, monospace;
+            background: #fff;
+            color: #1e1b4b;
+        }
+        input:focus { outline: none; border-color: #6d28d9; box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.12); }
+
+        /* TOMBOL */
+        button.aksi-btn {
+            background: #5b21b6;
+            color: white;
+            padding: 13px 22px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        button.aksi-btn:hover { background: #4c1d95; }
+        .btn-bug { background: #c93636 !important; }
+        .btn-bug:hover { background: #a82a2a !important; }
+        .btn-fix { background: #16834a !important; }
+        .btn-fix:hover { background: #106a3a !important; }
+        .reset { background: #64748b !important; }
+        .reset:hover { background: #475569 !important; }
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        /* HASIL BUG vs FIX */
+        .hasil-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
+        .panel { border: 1px solid #ddd6fe; border-radius: 10px; overflow: hidden; }
+        .panel > h3 { margin: 0; padding: 11px 15px; color: white; font-size: 16px; }
+        .panel.bug > h3 { background: #c93636; }
+        .panel.fix > h3 { background: #16834a; }
+        .panel .isi { padding: 15px; min-height: 95px; font-weight: bold; }
+        .kosong-info { color: #64748b; margin: 0; font-weight: normal; }
+        .text-error { color: #c93636; }
+        .text-valid { color: #16834a; }
+
+        /* RIWAYAT TERSIMPAN */
+        .tabel-scroll { overflow-x: auto; }
+        .tabel-scroll table { min-width: 520px; margin-top: 0; }
+        .tabel-scroll th, .tabel-scroll td { padding: 8px 10px; font-size: 13px; }
+        tr.baris-salah { background: #fdeaea !important; }
+        .tag-salah { display: inline-block; background: #c93636; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+        .tag-benar { display: inline-block; background: #16834a; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+        .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .btn-hapus { background: rgba(255,255,255,.2); color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px 10px; font-size: 12px; font-weight: bold; }
+        .btn-hapus:hover { background: rgba(255,255,255,.35); }
+        .small { color: #64748b; font-size: 13px; }
+
+        /* SKENARIO & ATURAN */
+        .rule { background: #f3e8ff; border-left: 4px solid #6d28d9; padding: 12px 15px; border-radius: 7px; margin-bottom: 18px; line-height: 1.5; font-size: 14px; }
+
+        /* KODE */
+        .code-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .code-grid h3 { margin: 0 0 8px; }
+        pre {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            background: #1e1633;
+            color: #ede9fe;
+            padding: 15px;
+            border-radius: 9px;
+            font: 12.5px/1.6 Consolas, monospace;
+            margin: 0;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .active-bug-code { border-color: #c93636; box-shadow: 0 0 0 3px rgba(201, 54, 54, 0.2); }
+        .active-fix-code { border-color: #16834a; box-shadow: 0 0 0 3px rgba(22, 131, 74, 0.2); }
+
+        /* DOKUMENTASI */
+        .doc { background: #faf5ff; border: 1px solid #ddd6fe; border-radius: 9px; padding: 14px 18px; margin: 12px 0; }
+        .doc h4 { margin: 0 0 8px; color: #4c1d95; }
+        .doc ul, .doc ol { margin: 6px 0; padding-left: 22px; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; background: #f3e8ff; color: #4c1d95; margin: 2px 4px 2px 0; }
+        .badge.red { background: #fdeaea; color: #9b1c1c; }
+        .badge.green { background: #e3f7e9; color: #176b36; }
+
+        /* FOOTER */
+        footer { background: #311068; color: white; text-align: center; padding: 22px; margin-top: 40px; }
+
+        @media (max-width: 768px) {
+            .tab-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .info-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .riwayat-grid { grid-template-columns: 1fr !important; }
+            main { width: 92%; }
+            nav { padding: 12px 4%; gap: 7px; }
+            nav a { padding: 7px 11px; font-size: 12.5px; }
+            header h1 { font-size: 22px; }
+            .hasil-grid, .code-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1>SISTEM MANAJEMEN GAME ROBLOX</h1>
+        <p><strong>Kelompok 2</strong> • Program Studi S1 Sistem Informasi — Universitas Tadulako</p>
+        <p>Simulasi Corrective Maintenance — Perbandingan Versi Sebelum (BUG) vs Sesudah (FIX)</p>
+    </header>
+
+    <!-- NAVIGASI KOTAK MENU -->
+    <nav id="menuNav">
+        <a href="#dashboard" class="aktif">Dashboard</a>
+        <a href="#katalog">Katalog Game</a>
+        <a href="#simulasi">1. Coba Program</a>
+        <a href="#kode">2. Perbandingan Kode</a>
+        <a href="#tersimpan">Data Tersimpan</a>
+        <a href="#ringkasan">Ringkasan Perbedaan</a>
+        <a href="#dokumentasi">Dokumentasi</a>
+    </nav>
+
+    <main>
+
+        <!-- DASHBOARD -->
+        <section class="card" id="dashboard">
+            <h2>Dashboard Ringkasan Sistem</h2>
+            <div class="dash-banner">
+                <p>Selamat datang di <b>Sistem Manajemen Game Roblox</b> — Pilih modul pengujian di bawah untuk membandingkan perilaku <b>BUG (v1.0.0)</b> vs <b>FIX (v1.1.0)</b>.</p>
+                <span class="dash-pill">Status: Aktif • Kelompok 2</span>
+            </div>
+            <div class="info-container">
+                <div class="info">
+                    <span class="label-stat">🎮 Katalog Utama</span>
+                    <h3 id="dashTotalKatalog">5 Game</h3>
+                    <small>Referensi terverifikasi</small>
+                </div>
+                <div class="info">
+                    <span class="label-stat">👥 Pemain Aktif</span>
+                    <h3 id="dashTotalPemain">1.120.000</h3>
+                    <small>Total pemain katalog</small>
+                </div>
+                <div class="info bug-stat">
+                    <span class="label-stat">✕ Log Uji BUG</span>
+                    <h3 id="dashLogBug">0 Data</h3>
+                    <small>Tersimpan tanpa filter</small>
+                </div>
+                <div class="info fix-stat">
+                    <span class="label-stat">✓ Log Uji FIX</span>
+                    <h3 id="dashLogFix">0 Data</h3>
+                    <small>Lolos validasi sistem</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- DAFTAR GAME AWAL -->
+        <section class="card" id="katalog">
+            <h2>Katalog Game Populer Roblox</h2>
+            <p>Daftar game referensi yang telah terdaftar di sistem (digunakan sebagai acuan anti-duplikasi).</p>
+            <div class="tabel-scroll">
+                <table>
+                    <tr><th>No</th><th>Nama Game</th><th>Genre</th><th>Developer</th><th>Pemain Aktif</th><th>Rating</th></tr>
+                    <tr><td>1</td><td>Brookhaven RP</td><td>Roleplay</td><td>Wolfpaq</td><td>450.000</td><td>All Ages</td></tr>
+                    <tr><td>2</td><td>Blox Fruits</td><td>Adventure</td><td>Gamer Robot Inc</td><td>380.000</td><td>9+</td></tr>
+                    <tr><td>3</td><td>Adopt Me!</td><td>Simulation</td><td>Uplift Games</td><td>140.000</td><td>All Ages</td></tr>
+                    <tr><td>4</td><td>Tower of Hell</td><td>Obby</td><td>YXCeptional Studios</td><td>55.000</td><td>All Ages</td></tr>
+                    <tr><td>5</td><td>Murder Mystery 2</td><td>Survival</td><td>Nikilis</td><td>95.000</td><td>9+</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- BAGIAN 1: COBA PROGRAM (5 PILIHAN FITUR UJI) -->
+        <section class="card" id="simulasi">
+            <h2>1. Coba Program (Pilih Modul yang Diuji)</h2>
+
+            <!-- TAB 5 FITUR ROBLOX -->
+            <div class="tab-bar" id="tabBar">
+                <button type="button" class="tab-btn active" data-fitur="nama" onclick="pilihFitur('nama')">1. Nama Game</button>
+                <button type="button" class="tab-btn" data-fitur="pemain" onclick="pilihFitur('pemain')">2. Pemain Aktif</button>
+                <button type="button" class="tab-btn" data-fitur="robux" onclick="pilihFitur('robux')">3. Harga Game Pass</button>
+                <button type="button" class="tab-btn" data-fitur="diskon" onclick="pilihFitur('diskon')">4. Diskon Item (%)</button>
+                <button type="button" class="tab-btn" data-fitur="rating" onclick="pilihFitur('rating')">5. Rating Usia</button>
+            </div>
+
+            <div id="boxAturan" class="rule"></div>
+
+            <label id="lblInput" for="inputData"></label>
+            <input type="text" id="inputData" placeholder="Ketik nilai uji di sini...">
+
+            <div class="actions">
+                <button type="button" class="aksi-btn btn-bug" onclick="jalankanBug()">✕ Jalankan BUG</button>
+                <button type="button" class="aksi-btn btn-fix" onclick="jalankanFix()">✓ Jalankan FIX</button>
+                <button type="button" class="aksi-btn reset" onclick="resetProgram()">Reset</button>
+            </div>
+
+            <div class="hasil-grid">
+                <div class="panel bug">
+                    <h3>Sebelum Perbaikan / BUG</h3>
+                    <div class="isi" id="hasilBug"><p class="kosong-info">Belum dijalankan...</p></div>
+                </div>
+                <div class="panel fix">
+                    <h3>Sesudah Perbaikan / FIX</h3>
+                    <div class="isi" id="hasilFix"><p class="kosong-info">Belum dijalankan...</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BAGIAN 2: PERBANDINGAN KODE JAVASCRIPT -->
+        <section class="card" id="kode">
+            <h2>2. Perhatikan Kode JavaScript</h2>
+            <p class="small">Blok kode di bawah otomatis berubah sesuai tab fitur yang kamu pilih di atas.</p>
+            <div class="code-grid">
+                <div>
+                    <h3 style="color:#c93636">Sebelum / BUG</h3>
+                    <pre id="preCodeBug"></pre>
+                </div>
+                <div>
+                    <h3 style="color:#16834a">Sesudah / FIX</h3>
+                    <pre id="preCodeFix"></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- DATA TERSIMPAN BUG vs FIX -->
+        <section class="card" id="tersimpan">
+            <h2>Data Pengujian Tersimpan</h2>
+            <p class="small">
+                Setiap input yang <b>berhasil disimpan</b> oleh program akan tercatat di sini.
+                Versi BUG menyimpan semua data tidak valid (baris merah), sedangkan versi FIX hanya menyimpan data yang lolos validasi.
+            </p>
+            <div class="hasil-grid riwayat-grid">
+                <div class="panel bug">
+                    <h3 class="panel-head"><span>Tersimpan di BUG (<span id="jmlBug">0</span>)</span>
+                        <button type="button" class="btn-hapus" onclick="hapusRiwayat('bug')">Hapus</button></h3>
+                    <div class="isi tabel-scroll" id="riwayatBug"></div>
+                </div>
+                <div class="panel fix">
+                    <h3 class="panel-head"><span>Tersimpan di FIX (<span id="jmlFix">0</span>)</span>
+                        <button type="button" class="btn-hapus" onclick="hapusRiwayat('fix')">Hapus</button></h3>
+                    <div class="isi tabel-scroll" id="riwayatFix"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RINGKASAN PERBEDAAN -->
+        <section class="card" id="ringkasan">
+            <h2>Ringkasan Perbedaan</h2>
+            <div class="tabel-scroll">
+                <table>
+                    <tr><th>Modul Uji</th><th>BUG (v1.0.0)</th><th>FIX (v1.1.0)</th></tr>
+                    <tr><td><b>1. Nama Game</b></td><td>Menerima nama kosong, simbol khusus, angka semua (<code>12345</code>), maupun duplikat</td><td>Dibersihkan <code>.trim()</code>, tolak simbol/full angka/duplikat, panjang 3–30 karakter</td></tr>
+                    <tr><td><b>2. Pemain Aktif</b></td><td>Menerima jumlah pemain negatif (<code>-5000</code>), desimal, atau simbol</td><td>Wajib bilangan bulat <code>≥ 0</code> tanpa huruf/desimal/simbol</td></tr>
+                    <tr><td><b>3. Harga Game Pass</b></td><td>Harga minus (<code>-100</code>) atau nol tetap disimpan ke sistem</td><td>Wajib bilangan bulat dalam rentang <code>1 – 100.000 Robux</code></td></tr>
+                    <tr><td><b>4. Diskon Item (%)</b></td><td>Diskon <code>> 100%</code> (misal <code>150%</code>) menghasilkan harga bayar minus</td><td>Dibatasi ketat hanya bilangan bulat <code>0% – 100%</code></td></tr>
+                    <tr><td><b>5. Rating Usia</b></td><td>Menerima teks sembarang di luar kategori resmi</td><td>Hanya menerima standar resmi: <code>All Ages</code>, <code>9+</code>, atau <code>13+</code></td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- DOKUMENTASI -->
+        <section class="card" id="dokumentasi">
+            <h2>Dokumentasi Proyek</h2>
+
+            <div class="doc">
+                <h4>Identitas Penyusun — Kelompok 2</h4>
+                <ul>
+                    <li><b>Athamisyal Firaz Malahika</b> (F5212520045)</li>
+                    <li><b>Muhammad Rizky Al Ghifari</b> (F5212520055)</li>
+                    <li><b>Nabhita Akhilla</b> (F5212520057)</li>
+                    <li><b>Mulya Syaputra Jufran</b> (F5212520069)</li>
+                </ul>
+            </div>
+
+            <h3>1. README</h3>
+            <div class="doc">
+                <p><b>Sistem Manajemen Game Roblox</b> adalah aplikasi web interaktif untuk mensimulasikan pengujian dan perbaikan validasi pada 5 modul utama pengelolaan katalog game Roblox. Proyek ini menerapkan materi <i>Software Maintenance (Corrective, Preventive,</i> dan <i>Adaptive Maintenance)</i> dengan membandingkan versi BUG (v1.0.0) dan FIX (v1.1.0) dalam satu tampilan.</p>
+                <h4>Fitur Utama</h4>
+                <ol>
+                    <li>Navigasi 5 modul pengujian spesifik (Nama Game, Pemain Aktif, Harga Game Pass, Diskon Item, Rating Usia).</li>
+                    <li>Dashboard statistik dinamis yang memantau log pengujian BUG dan FIX secara langsung.</li>
+                    <li>Tampilan kode sumber JavaScript sebelum dan sesudah perbaikan yang berganti otomatis sesuai tab modul.</li>
+                    <li>Penyimpanan riwayat data valid vs tidak valid menggunakan browser <code>localStorage</code>.</li>
+                </ol>
+                <h4>Teknologi</h4>
+                <span class="badge">HTML5</span><span class="badge">CSS3 (Responsive)</span><span class="badge">JavaScript</span><span class="badge">LocalStorage</span>
+            </div>
+
+            <h3>2. Bug Report</h3>
+            <div class="doc">
+                <h4>BUG-001 — Nama game menerima angka semua (12345), simbol, kosong, & duplikat</h4>
+                <span class="badge red">Severity: Medium</span><span class="badge green">Status: Fixed</span>
+                <p><b>Langkah reproduksi:</b> Pilih tab <i>1. Nama Game</i>, masukkan <code>12345</code> atau <code>Brookhaven RP</code>, lalu klik <i>Jalankan BUG</i>.</p>
+                <p><b>Perbaikan:</b> <code>fixNamaGame()</code> menolak spasi kosong, simbol khusus, string angka semua, serta mencegah duplikasi katalog.</p>
+            </div>
+            <div class="doc">
+                <h4>BUG-002 — Jumlah pemain aktif menerima nilai negatif (-5000) & desimal</h4>
+                <span class="badge red">Severity: High</span><span class="badge green">Status: Fixed</span>
+                <p><b>Langkah reproduksi:</b> Pilih tab <i>2. Pemain Aktif</i>, masukkan <code>-5000</code>, lalu klik <i>Jalankan BUG</i>.</p>
+                <p><b>Perbaikan:</b> <code>fixPemainAktif()</code> memvalidasi bilangan bulat <code>≥ 0</code>.</p>
+            </div>
+            <div class="doc">
+                <h4>BUG-003 — Harga Game Pass Robux menerima nilai negatif (-100)</h4>
+                <span class="badge red">Severity: High</span><span class="badge green">Status: Fixed</span>
+                <p><b>Langkah reproduksi:</b> Pilih tab <i>3. Harga Game Pass</i>, masukkan <code>-100</code>, lalu klik <i>Jalankan BUG</i>.</p>
+                <p><b>Perbaikan:</b> <code>fixHargaRobux()</code> membatasi harga bilangan bulat antara <code>1 – 100.000 Robux</code>.</p>
+            </div>
+            <div class="doc">
+                <h4>BUG-004 — Diskon item melebihi 100% (150%) menghasilkan tagihan minus</h4>
+                <span class="badge red">Severity: High</span><span class="badge green">Status: Fixed</span>
+                <p><b>Langkah reproduksi:</b> Pilih tab <i>4. Diskon Item (%)</i>, masukkan <code>150</code>, lalu klik <i>Jalankan BUG</i>.</p>
+                <p><b>Perbaikan:</b> <code>fixDiskonItem()</code> membatasi rentang diskon hanya <code>0% – 100%</code>.</p>
+            </div>
+            <div class="doc">
+                <h4>BUG-005 — Rating usia menerima kategori sembarang di luar standar Roblox</h4>
+                <span class="badge red">Severity: Medium</span><span class="badge green">Status: Fixed</span>
+                <p><b>Langkah reproduksi:</b> Pilih tab <i>5. Rating Usia</i>, masukkan <code>Bebas</code>, lalu klik <i>Jalankan BUG</i>.</p>
+                <p><b>Perbaikan:</b> <code>fixRatingUsia()</code> membatasi input hanya pada <code>All Ages</code>, <code>9+</code>, atau <code>13+</code>.</p>
+            </div>
+
+            <h3>3. Changelog</h3>
+            <div class="doc">
+                <h4>[1.1.0] — FIX Version</h4>
+                <ul>
+                    <li><b>Fixed (Corrective):</b> Menambahkan validasi ketat pada 5 modul pengujian (BUG-001 s/d BUG-005) dengan pesan error spesifik berwarna merah.</li>
+                    <li><b>Added (Preventive & Adaptive):</b> Menambahkan tab navigasi 5 modul uji, sorotan blok kode aktif, dashboard statistik dinamis, serta tata letak responsif perangkat mobile.</li>
+                </ul>
+                <h4>[1.0.0] — BUG Version</h4>
+                <ul>
+                    <li><b>Added:</b> Rilis awal antarmuka simulasi tanpa penyaringan validasi input.</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p><strong>Kelompok 2</strong> — Program Studi S1 Sistem Informasi — Universitas Tadulako</p>
+        <p>Sistem Manajemen Game Roblox • Simulasi Software Maintenance (BUG & FIX)</p>
+    </footer>
+
+    <script>
+        function esc(s) {
+            const div = document.createElement("div");
+            div.textContent = String(s);
+            return div.innerHTML;
+        }
+
+        function cekBilanganBulat(raw) {
+            if (raw === "") {
+                return { val: null, err: "Error: Input tidak boleh kosong!" };
+            }
+            const temp = raw.startsWith("-") ? raw.slice(1) : raw;
+            if (/^\d+\.\d+$/.test(temp)) {
+                return { val: null, err: "Error: Input tidak boleh desimal (harus bilangan bulat)!" };
+            }
+            if (temp === "" || /[^a-zA-Z0-9]/.test(temp)) {
+                return { val: null, err: "Error: Input tidak boleh mengandung simbol khusus!" };
+            }
+            if (/[a-zA-Z]/.test(temp)) {
+                return { val: null, err: "Error: Input tidak boleh mengandung huruf!" };
+            }
+            return { val: parseInt(raw, 10), err: null };
+        }
+
+        // =====================================================================
+        // 5 MODUL FUNGSI BUG vs FIX (STUDI KASUS ROBLOX)
+        // =====================================================================
+        function bugNamaGame(inp) {
+            return "Nama game '" + inp + "' berhasil ditambahkan ke katalog (Status: Draft Belum Rilis)";
+        }
+        function fixNamaGame(inp) {
+            const nama = String(inp || "").trim();
+            if (nama === "") return "Error: Nama game tidak boleh kosong atau spasi saja!";
+            if (/[^a-zA-Z0-9 !]/.test(nama)) return "Error: Nama game tidak boleh mengandung simbol khusus!";
+            if (/^\d+$/.test(nama.replace(/\s+/g, ""))) return "Error: Nama game tidak boleh berisi angka semua!";
+            if (nama.length < 3 || nama.length > 30) return "Error: Panjang nama game harus 3 - 30 karakter!";
+            const katalog = ["brookhaven rp", "blox fruits", "adopt me!", "tower of hell", "murder mystery 2"];
+            if (katalog.indexOf(nama.toLowerCase()) !== -1) {
+                return "Error: Nama game '" + nama + "' sudah terdaftar di katalog!";
+            }
+            return "Nama game '" + nama + "' terverifikasi & berhasil ditambahkan!";
+        }
+
+        function bugPemainAktif(inp) {
+            return "Jumlah pemain aktif " + inp + " berhasil disimpan ke statistik";
+        }
+        function fixPemainAktif(inp) {
+            const raw = String(inp || "").trim();
+            const cek = cekBilanganBulat(raw);
+            if (cek.err) return cek.err;
+            if (cek.val < 0) return "Error: Jumlah pemain aktif tidak boleh negatif (minimal 0)!";
+            return "Jumlah pemain aktif " + cek.val.toLocaleString("id-ID") + " Players berhasil disimpan!";
+        }
+
+        function bugHargaRobux(inp) {
+            return "Harga Game Pass " + inp + " Robux berhasil disimpan";
+        }
+        function fixHargaRobux(inp) {
+            const raw = String(inp || "").trim();
+            const cek = cekBilanganBulat(raw);
+            if (cek.err) return cek.err;
+            if (cek.val < 1) return "Error: Harga Game Pass minimal 1 Robux (tidak boleh 0 atau negatif)!";
+            if (cek.val > 100000) return "Error: Harga Game Pass melebihi batas (maksimal 100.000 Robux)!";
+            return "Harga Game Pass " + cek.val.toLocaleString("id-ID") + " Robux berhasil disimpan!";
+        }
+
+        function bugDiskonItem(inp) {
+            const total = 1000 - Math.floor((1000 * Number(inp)) / 100);
+            return "Diskon " + inp + "% diterapkan -> Harga Akhir: " + total + " Robux";
+        }
+        function fixDiskonItem(inp) {
+            const raw = String(inp || "").trim();
+            const cek = cekBilanganBulat(raw);
+            if (cek.err) return cek.err;
+            if (cek.val < 0) return "Error: Diskon tidak boleh negatif (minimal 0%)!";
+            if (cek.val > 100) return "Error: Diskon melebihi batas (maksimal 100%)!";
+            const total = 1000 - Math.floor((1000 * cek.val) / 100);
+            return "Diskon " + cek.val + "% valid -> Harga Akhir: " + total.toLocaleString("id-ID") + " Robux";
+        }
+
+        function bugRatingUsia(inp) {
+            return "Rating usia '" + inp + "' berhasil disimpan untuk game";
+        }
+        function fixRatingUsia(inp) {
+            const rating = String(inp || "").trim();
+            if (rating === "") return "Error: Rating usia tidak boleh kosong!";
+            const standar = ["All Ages", "9+", "13+"];
+            if (standar.indexOf(rating) === -1) {
+                return "Error: Rating usia tidak valid! Pilih salah satu: All Ages, 9+, atau 13+.";
+            }
+            return "Rating usia '" + rating + "' sesuai standar Roblox & berhasil disimpan!";
+        }
+
+        // =====================================================================
+        // KONFIGURASI 5 MODUL UJI
+        // =====================================================================
+        const MODUL_ROBLOX = {
+            nama: {
+                judul: "1. Nama Game",
+                aturan: "Aturan Nama Game: Tidak boleh kosong/spasi saja, tidak boleh mengandung simbol khusus, tidak boleh berisi angka semua (misal 12345), panjang 3–30 karakter, dan tidak boleh duplikat dengan katalog.",
+                label: "Masukkan Nama Game Roblox (coba: 12345, Brookhaven RP, atau Dress To Impress):",
+                defaultVal: "12345",
+                fnBug: bugNamaGame,
+                fnFix: fixNamaGame,
+                kodeBug: "function tambahNamaGame(inp) {\n  // BUG: Tanpa validasi kosong, simbol, angka, maupun duplikat\n  return \"Nama game '\" + inp + \"' berhasil ditambahkan\";\n}",
+                kodeFix: "function tambahNamaGame(inp) {\n  const nama = String(inp || \"\").trim();\n  if (nama === \"\") return \"Error: Nama tidak boleh kosong!\";\n  if (/^\\d+$/.test(nama)) return \"Error: Tidak boleh angka semua!\";\n  if (katalog.includes(nama.toLowerCase())) return \"Error: Duplikat!\";\n  return \"Nama game '\" + nama + \"' terverifikasi!\";\n}"
+            },
+            pemain: {
+                judul: "2. Pemain Aktif",
+                aturan: "Aturan Pemain Aktif: Hanya valid untuk bilangan bulat 0 atau lebih. Input kosong, desimal, simbol khusus, huruf, atau angka negatif (-5000) wajib ditolak.",
+                label: "Masukkan Jumlah Pemain Aktif (coba: -5000, 150.5, atau 250000):",
+                defaultVal: "-5000",
+                fnBug: bugPemainAktif,
+                fnFix: fixPemainAktif,
+                kodeBug: "function simpanPemainAktif(inp) {\n  // BUG: Angka negatif & desimal langsung diterima\n  return \"Jumlah pemain aktif \" + inp + \" berhasil disimpan\";\n}",
+                kodeFix: "function simpanPemainAktif(inp) {\n  const cek = cekBilanganBulat(String(inp || \"\").trim());\n  if (cek.err) return cek.err;\n  if (cek.val < 0) return \"Error: Tidak boleh negatif!\";\n  return \"Jumlah pemain aktif \" + cek.val + \" berhasil disimpan!\";\n}"
+            },
+            robux: {
+                judul: "3. Harga Game Pass",
+                aturan: "Aturan Harga Game Pass (Robux): Hanya valid untuk bilangan bulat antara 1 sampai 100.000 Robux. Input kosong, negatif (-100), nol, atau melebihi batas wajib ditolak.",
+                label: "Masukkan Harga Game Pass dalam Robux (coba: -100, 0, atau 499):",
+                defaultVal: "-100",
+                fnBug: bugHargaRobux,
+                fnFix: fixHargaRobux,
+                kodeBug: "function simpanHargaRobux(inp) {\n  // BUG: Tidak cek harga negatif atau batas Robux\n  return \"Harga Game Pass \" + inp + \" Robux berhasil disimpan\";\n}",
+                kodeFix: "function simpanHargaRobux(inp) {\n  const cek = cekBilanganBulat(String(inp || \"\").trim());\n  if (cek.err) return cek.err;\n  if (cek.val < 1 || cek.val > 100000) return \"Error: Rentang 1 - 100.000 Robux!\";\n  return \"Harga Game Pass \" + cek.val + \" Robux berhasil disimpan!\";\n}"
+            },
+            diskon: {
+                judul: "4. Diskon Item (%)",
+                aturan: "Aturan Diskon Item (Harga Awal 1.000 Robux): Hanya valid untuk bilangan bulat 0% sampai 100%. Diskon negatif atau di atas 100% (misal 150%) wajib ditolak.",
+                label: "Masukkan Persentase Diskon Item % (coba: 150, -10, atau 25):",
+                defaultVal: "150",
+                fnBug: bugDiskonItem,
+                fnFix: fixDiskonItem,
+                kodeBug: "function hitungDiskonItem(inp) {\n  // BUG: Diskon > 100% menghasilkan harga minus\n  const total = 1000 - Math.floor((1000 * Number(inp)) / 100);\n  return \"Diskon \" + inp + \"% -> Harga Akhir: \" + total + \" Robux\";\n}",
+                kodeFix: "function hitungDiskonItem(inp) {\n  const cek = cekBilanganBulat(String(inp || \"\").trim());\n  if (cek.err) return cek.err;\n  if (cek.val < 0 || cek.val > 100) return \"Error: Diskon harus 0% - 100%!\";\n  const total = 1000 - Math.floor((1000 * cek.val) / 100);\n  return \"Diskon \" + cek.val + \"% valid -> \" + total + \" Robux\";\n}"
+            },
+            rating: {
+                judul: "5. Rating Usia",
+                aturan: "Aturan Rating Usia Roblox: Input tidak boleh kosong dan hanya boleh diisi dengan kategori standar resmi Roblox yaitu: All Ages, 9+, atau 13+.",
+                label: "Masukkan Rating Usia Game (coba: Bebas, 18+, atau All Ages):",
+                defaultVal: "Bebas",
+                fnBug: bugRatingUsia,
+                fnFix: fixRatingUsia,
+                kodeBug: "function simpanRatingUsia(inp) {\n  // BUG: Semua teks sembarang diterima sebagai rating\n  return \"Rating usia '\" + inp + \"' berhasil disimpan\";\n}",
+                kodeFix: "function simpanRatingUsia(inp) {\n  const r = String(inp || \"\").trim();\n  if (![\"All Ages\", \"9+\", \"13+\"].includes(r)) {\n    return \"Error: Pilih All Ages, 9+, atau 13+!\";\n  }\n  return \"Rating usia '\" + r + \"' sesuai standar Roblox!\";\n}"
+            }
+        };
+
+        let fiturAktif = "nama";
+
+        function pilihFitur(kode) {
+            fiturAktif = kode;
+            const m = MODUL_ROBLOX[kode];
+
+            document.querySelectorAll(".tab-btn").forEach(function (btn) {
+                btn.classList.toggle("active", btn.dataset.fitur === kode);
+            });
+
+            document.getElementById("boxAturan").textContent = m.aturan;
+            document.getElementById("lblInput").textContent = m.label;
+            document.getElementById("inputData").value = m.defaultVal;
+            document.getElementById("preCodeBug").textContent = m.kodeBug;
+            document.getElementById("preCodeFix").textContent = m.kodeFix;
+
+            document.getElementById("hasilBug").innerHTML = '<p class="kosong-info">Belum dijalankan...</p>';
+            document.getElementById("hasilFix").innerHTML = '<p class="kosong-info">Belum dijalankan...</p>';
+            document.getElementById("preCodeBug").classList.remove("active-bug-code");
+            document.getElementById("preCodeFix").classList.remove("active-fix-code");
+        }
+
+        function jalankanBug() {
+            const m = MODUL_ROBLOX[fiturAktif];
+            const val = document.getElementById("inputData").value;
+            const out = m.fnBug(val);
+            const cekValid = !m.fnFix(val).startsWith("Error");
+
+            const box = document.getElementById("hasilBug");
+            box.textContent = out;
+            box.className = "isi text-valid";
+
+            document.getElementById("preCodeBug").classList.add("active-bug-code");
+            document.getElementById("preCodeFix").classList.remove("active-fix-code");
+
+            simpanRiwayat("bug", { modul: m.judul, input: val, hasil: out, valid: cekValid });
+        }
+
+        function jalankanFix() {
+            const m = MODUL_ROBLOX[fiturAktif];
+            const val = document.getElementById("inputData").value;
+            const out = m.fnFix(val);
+            const isError = out.startsWith("Error");
+
+            const box = document.getElementById("hasilFix");
+            box.textContent = out;
+            box.className = "isi " + (isError ? "text-error" : "text-valid");
+
+            document.getElementById("preCodeFix").classList.add("active-fix-code");
+            document.getElementById("preCodeBug").classList.remove("active-bug-code");
+
+            if (!isError) {
+                simpanRiwayat("fix", { modul: m.judul, input: val.trim(), hasil: out, valid: true });
+            }
+        }
+
+        function resetProgram() {
+            pilihFitur(fiturAktif);
+        }
+
+        // =====================================================================
+        // RIWAYAT TERSIMPAN & DASHBOARD DINAMIS
+        // =====================================================================
+        const KUNCI = { bug: "roblox_modul_bug", fix: "roblox_modul_fix" };
+        const memori = { bug: [], fix: [] };
+
+        function muatRiwayat(v) {
+            try {
+                const t = localStorage.getItem(KUNCI[v]);
+                if (t) return JSON.parse(t);
+            } catch (e) { }
+            return memori[v];
+        }
+
+        function simpanRiwayat(v, rec) {
+            rec.waktu = new Date().toLocaleTimeString("id-ID");
+            const list = muatRiwayat(v).slice();
+            list.push(rec);
+            memori[v] = list;
+            try { localStorage.setItem(KUNCI[v], JSON.stringify(list)); } catch (e) { }
+            tampilRiwayat();
+        }
+
+        function hapusRiwayat(v) {
+            memori[v] = [];
+            try { localStorage.removeItem(KUNCI[v]); } catch (e) { }
+            tampilRiwayat();
+        }
+
+        function tampilRiwayat() {
+            [["bug", "Bug"], ["fix", "Fix"]].forEach(function (pair) {
+                const v = pair[0], nama = pair[1];
+                const list = muatRiwayat(v);
+                document.getElementById("jml" + nama).textContent = list.length;
+                const box = document.getElementById("riwayat" + nama);
+                if (list.length === 0) {
+                    box.innerHTML = '<p class="kosong-info">Belum ada data tersimpan.</p>';
+                    return;
+                }
+                let html = '<table><tr><th>No</th><th>Modul Uji</th><th>Input</th><th>Status</th></tr>';
+                list.forEach(function (r, i) {
+                    const inpText = String(r.input).trim() === "" ? "(kosong)" : esc(r.input);
+                    html += '<tr' + (r.valid ? '' : ' class="baris-salah"') + '>' +
+                        '<td>' + (i + 1) + '</td><td>' + esc(r.modul) + '</td><td><code>' + inpText + '</code></td>' +
+                        '<td>' + (r.valid ? '<span class="tag-benar">Valid</span>' : '<span class="tag-salah">Tidak valid</span>') +
+                        '<br><span class="small">' + esc(r.waktu) + '</span></td></tr>';
+                });
+                box.innerHTML = html + '</table>';
+            });
+
+            document.getElementById("dashLogBug").textContent = muatRiwayat("bug").length + " Data";
+            document.getElementById("dashLogFix").textContent = muatRiwayat("fix").length + " Data";
+        }
+
+        // Highlight kotak menu navigasi
+        const tautanMenu = document.querySelectorAll("#menuNav a");
+        tautanMenu.forEach(function (link) {
+            link.addEventListener("click", function () {
+                tautanMenu.forEach(function (item) { item.classList.remove("aktif"); });
+                this.classList.add("aktif");
+            });
+        });
+
+        window.addEventListener("scroll", function () {
+            const posisi = window.scrollY + 130;
+            document.querySelectorAll("section[id]").forEach(function (sec) {
+                if (posisi >= sec.offsetTop && posisi < sec.offsetTop + sec.offsetHeight) {
+                    const id = sec.getAttribute("id");
+                    tautanMenu.forEach(function (link) {
+                        link.classList.toggle("aktif", link.getAttribute("href") === "#" + id);
+                    });
+                }
+            });
+        });
+
+        pilihFitur("nama");
+        tampilRiwayat();
+    </script>
+
+</body>
+</html>

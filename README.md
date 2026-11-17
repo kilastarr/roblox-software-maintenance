@@ -1,14 +1,16 @@
-# 🎮 Sistem Manajemen Game Roblox
+**Penyusun:** Kelompok 2
+# Sistem Manajemen Game Roblox — Simulasi Software Maintenance (BUG & FIX)
 
-Aplikasi web sederhana untuk mengelola daftar game populer di Roblox beserta statistik pemain aktifnya, dibuat sebagai studi kasus praktik **Software Maintenance** (Bug & Fix).
+Aplikasi web sederhana untuk mensimulasikan pencatatan katalog dan statistik game populer di Roblox sebagai studi kasus praktik **Software Maintenance** (*Corrective, Preventive,* dan *Adaptive Maintenance*).
 
-## Struktur File
-- `bug.html` — Versi awal aplikasi (`v1.0.0`) yang masih memiliki celah bug pada validasi input.
-- `fix.html` — Versi perbaikan (`v1.1.0`) setelah dilakukan *Corrective, Perfective,* dan *Preventive Maintenance*.
-- `BUG_REPORT.md` — Dokumentasi temuan bug dan langkah reproduksinya.
-- `CHANGELOG.md` — Riwayat perubahan antar versi.
+## Struktur Folder
+Roblox-Software-Maintenance/
+├── Roblox_Game_Manager.html   (aplikasi lengkap satu file)
+├── README.md
+├── BUG_REPORT.md
+└── CHANGELOG.md
 
 ## Cara Menjalankan
-1. Buka folder proyek.
-2. Klik kanan pada `bug.html` $\rightarrow$ **Open with Chrome/Browser** untuk melihat kondisi sebelum perbaikan.
-3. Klik kanan pada `fix.html` $\rightarrow$ **Open with Chrome/Browser** untuk menguji hasil perbaikan.
+1. Buka file `Roblox_Game_Manager.html` langsung di browser (Chrome / Edge / Safari).
+2. Pilih salah satu dari 5 skenario pengujian otomatis atau isi formulir secara manual.
+3. Klik **Jalankan BUG** dan **Jalankan FIX**, lalu bandingkan hasilnya pada panel kiri dan kanan.
